@@ -18,7 +18,7 @@ def getDB():
 def show():
     db = get_db()
     messages = db.execute(
-        QUERY
+        "SELECT message.subject, user.username, message.created, message.body FROM message JOIN user on message.from_id=user.id WHERE message.to_id="+str(g.user['id'])+" ORDER BY message.created desc"
     ).fetchall()
 
     return render_template('message', messages=messages)
@@ -51,7 +51,7 @@ def send():
         userto = None 
         
         userto = db.execute(
-            QUERY, (to_username,)
+            "select * from user where username=?", (to_username,)
         ).fetchone()
         
         if userto is None:
@@ -62,7 +62,7 @@ def send():
         else:
             db = get_db()
             db.execute(
-                QUERY,
+                "insert into message (from_id,to_id,subject,body) values (?,?,?,?)",
                 (g.user['id'], userto['id'], subject, body)
             )
             db.commit()

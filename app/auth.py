@@ -4,10 +4,8 @@ from webbrowser import get
 import flask
 from . import utils
 import email
-
 from email.message import EmailMessage
 import smtplib
-
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -46,7 +44,7 @@ def activate():
         return redirect(url_for('auth.login'))
 
 
-@bp.route('/register', methods=['GET', 'POST'])
+@bp.route('/register', methods=('GET', 'POST'))
 def register():
     try:
         if g.user:
@@ -80,7 +78,7 @@ def register():
                 flash(error)
                 return render_template('auth/register.html')
             
-            if (not email or (not utils.isEmailValid(email))):
+            if ((not email) or (not utils.isEmailValid(email))):
                 error =  'Email address invalid.'
                 flash(error)
                 return render_template('auth/register.html')
@@ -121,7 +119,7 @@ def register():
         return render_template('auth/register.html')
 
     
-@bp.route('/confirm', methods=['GET', 'POST'])
+@bp.route('/confirm', methods=('GET', 'POST'))
 def confirm():
     try:
         if g.user:
@@ -173,7 +171,7 @@ def confirm():
                 flash('Invalid')
                 return render_template('auth/forgot.html')
 
-        return render_template('auth/login.html')
+        return render_template('auth/forgot.html')
     except:
         return render_template('auth/forgot.html')
 
@@ -197,7 +195,7 @@ def change():
         
         return render_template('auth/forgot.html')
     except:
-        return render_template('auth/change.html')
+        return render_template('auth/forgot.html')
 
 
 @bp.route('/forgot', methods=['GET', 'POST'])
@@ -209,7 +207,7 @@ def forgot():
         if request.method == 'POST':
             email = request.form['email']
             
-            if (not email or (not utils.isEmailValid(email))):
+            if ((not email) or (not utils.isEmailValid(email))):
                 error = 'Email Address Invalid'
                 flash(error)
                 return render_template('auth/forgot.html')
@@ -250,7 +248,7 @@ def forgot():
         return render_template('auth/forgot.html')
 
 
-@bp.route('/login', methods=['GET', 'POST'])
+@bp.route('/login', methods=('GET', 'POST'))
 def login():
     try:
         if g.user:
@@ -276,7 +274,7 @@ def login():
                 'SELECT * FROM user WHERE username = ?', (username,)
             ).fetchone()
             
-            if not check_password_hash(user['password'], password + user['salt']):
+            if user is None:
                 error = 'Incorrect username or password'
             elif not check_password_hash(user['password'], password + user['salt']):
                 error = 'Incorrect username or password'   
